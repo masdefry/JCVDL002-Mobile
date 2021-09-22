@@ -11,7 +11,6 @@ import { NavigationContainer } from '@react-navigation/native';
 
 // Router
 import RegisterRouter from './routes/RegisterRouter'
-import { Container, Content, Text } from 'native-base';
 
 const App = () => {
   return (

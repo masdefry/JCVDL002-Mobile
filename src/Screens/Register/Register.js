@@ -10,8 +10,59 @@ import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons'
 import color from './../../Supports/Styles/Color'
 import spacing from './../../Supports/Styles/Spacing'
 import font from './../../Supports/Styles/Font'
+import { useState } from 'react/cjs/react.development';
+
+// Function
+import EmailValidator from './../../Supports/Functions/EmailValidator'
 
 const Register = () => {
+
+  const [data, setData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
+
+  const [error, setError] = useState('')
+
+  const onFillData = (val, dataType) => {
+    if(dataType === 'email'){
+      setData({...data, email: val})
+    }
+
+    if(dataType === 'password'){
+      setData({...data, password: val})
+    }
+    
+    if(dataType === 'confirmPassword'){
+      setData({...data, confirmPassword: val})
+    }
+  }
+
+  const onSubmitData = () => {
+    // Validasi Email
+    let emailValidatorResult = EmailValidator(data.email)
+    if(emailValidatorResult === false) return setError('Email Tidak Valid')
+
+    // Validasi Password
+    let number = '0123456789'
+    let character = '!@#$%'
+
+    if(data.password !== data.confirmPassword) return setError('Password & Confirm Password Tidak Sesuai')
+    if(data.password.length < 6) return setError('Password Minimal 6 Karakter')
+
+    let isNumber = 0 // 1 -> 2 -> 2
+    let isCharacter = 0 // 0 -> 0 -> 1
+    for(let i=0; i < data.password.length; i++){
+      if(number.includes(data.password[i])) isNumber++
+      if(character.includes(data.password[i])) isCharacter++
+    }
+
+    if(isNumber === 0 || isCharacter === 0) return setError('Password Harus Mengandung Angka & Special Character')
+    
+    return setError('Proses Submit Data')
+  }
+
   return (
     <Container>
       <Content>
@@ -39,19 +90,19 @@ const Register = () => {
           <Row style={{ ...spacing.mtEight }}>
             <Item floatingLabel style={{ width: '100%' }}>
               <Label>Email</Label>
-              <Input style={{ width: '100%' }} />
+              <Input onChangeText={(val) => onFillData(val, 'email')} style={{ width: '100%' }} />
             </Item>
           </Row>
           <Row style={{ ...spacing.mtFive }}>
             <Item floatingLabel style={{ width: '100%' }}>
               <Label>Password</Label>
-              <Input style={{ width: '100%' }} />
+              <Input onChangeText={(val) => onFillData(val, 'password')} style={{ width: '100%' }} />
             </Item>
           </Row>
           <Row style={{ ...spacing.mtFive }}>
             <Item floatingLabel style={{ width: '100%' }}>
               <Label>Confirm Password</Label>
-              <Input style={{ width: '100%' }} />
+              <Input onChangeText={(val) => onFillData(val, 'confirmPassword')} style={{ width: '100%' }} />
             </Item>
           </Row>
           <Row style={{ justifyContent: 'flex-end', ...spacing.mtThree }}>
@@ -60,7 +111,17 @@ const Register = () => {
             </Text>
           </Row>
           <Row>
-            <Button rounded block danger style={{ width: '100%', ...spacing.mtFive }}>
+            <Text style={{ color: 'red' }}>
+              {
+                error?
+                  error
+                :
+                  null
+              }
+            </Text>
+          </Row>
+          <Row>
+            <Button onPress={() => onSubmitData()} rounded block danger style={{ width: '100%', ...spacing.mtFive }}>
               <Text>Sign Up</Text>
             </Button>
           </Row>

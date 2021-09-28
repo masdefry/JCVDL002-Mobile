@@ -10,14 +10,12 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 
 // Router
-// import RegisterRouter from './routes/RegisterRouter'
-
-import StackNavigation from './src/Screens/Navigation/Navigation';
+import RegisterRouter from './routes/RegisterRouter'
 
 const App = () => {
   return (
     <NavigationContainer>
-      <StackNavigation />
+      <RegisterRouter />
     </NavigationContainer>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import {Button, Col, Container, Content, Grid, Input, Item, Label, Row, Text} from 'native-base';
+import { urlAPI } from '../../Supports/Constants/urlAPI';
 
 // Utilities
 import color from './../../Supports/Styles/Color'
@@ -27,7 +28,7 @@ const Login = ({ navigation }) => {
   }
 
   const onSubmitData = () => {
-    axios.get(`http://10.0.2.2:3000/users`, {params: {...data}})
+    axios.get(urlAPI + '/users', {params: {...data}})
     .then((res) => {
       if(res.data.length === 1){
         setIsLogin(true)

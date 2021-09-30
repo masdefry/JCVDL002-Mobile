@@ -1,5 +1,6 @@
 import React from 'react';
 import {Button, Col, Container, Content, Grid, Input, Item, Label, Row, Text} from 'native-base';
+import axios from 'axios';
 
 // Fontawesome
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -60,7 +61,23 @@ const Register = () => {
 
     if(isNumber === 0 || isCharacter === 0) return setError('Password Harus Mengandung Angka & Special Character')
     
-    return setError('Proses Submit Data')
+    axios.get('http://10.0.2.2:3000/users', {params: {email: data.email}})
+    .then((res) => {
+      if(res.data.length === 1){
+        setError('Email Sudah Terdaftar')
+      }else{
+        axios.post('http://10.0.2.2:3000/users', {email: data.email, password: data.password})
+        .then((res) => {
+          setError('Register Success')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
   }
 
   return (

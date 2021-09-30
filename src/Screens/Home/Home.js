@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { Button, Content, Grid, Input, Item, Container, Header, Body, Row, Text, Card, CardItem} from 'native-base'
-// import DatePicker from 'react-native-datepicker'
+import DatePicker from 'react-native-datepicker'
 
 // Icon
 import Icon from 'react-native-vector-icons/FontAwesome' 
@@ -10,10 +10,30 @@ import color from './../../Supports/Styles/Color'
 import spacing from './../../Supports/Styles/Spacing'
 import font from './../../Supports/Styles/Font'
 
-const Home = () => {
+const Home = ({navigation: {navigate}}) => {
     
     const [error, setError] = useState('')
-    
+    const [data, setData] = useState({
+        from: '',
+        to: '',
+        totalSeat: 0,
+        date: ''
+    })
+
+    const onFillData = (val, dataType) => {
+        if(dataType === 'from') return setData({...data, from: val})
+        if(dataType === 'to') return setData({...data, to: val})
+        if(dataType === 'totalSeat'){
+            if(val > 3) return setError('Total Seat Maksimal 3')
+            return setData({...data, totalSeat: val}), setError('')
+        }
+        if(dataType === 'date') return setData({...data, date: val})
+    }
+
+    const onSubmitData = () => {
+        navigate('ShuttleList', {data})
+    }
+
     return(
         <Container>
             <Header style={{...color.bgPrimary}}>
@@ -31,34 +51,34 @@ const Home = () => {
                                 <Row style={{width: '100%', ...spacing.ptOne, ...spacing.pbZero}}>
                                     <Item style={{width: '100%'}}>
                                         <Icon name='map-marker' style={{...spacing.pxThree, ...spacing.pyZero, ...font.fsFive, ...color.secondary}} />
-                                        <Input placeholder='Berangkat Dari' style={{paddingVertical: 0, fontSize: 15}} />
+                                        <Input onChangeText={(val) => onFillData(val, 'from')} placeholder='Berangkat Dari' style={{paddingVertical: 0, fontSize: 15}} />
                                     </Item>
                                 </Row>
                                 <Row style={{width: '100%', ...spacing.ptOne, ...spacing.pbZero}}>
                                     <Item style={{width: '100%'}}>
                                         <Icon name='map-marker' style={{...spacing.pxThree, ...spacing.pyZero, ...font.fsFive, ...color.secondary}} />
-                                        <Input placeholder='Tujuan' style={{paddingVertical: 0, fontSize: 15}} />
+                                        <Input onChangeText={(val) => onFillData(val, 'to')} placeholder='Tujuan' style={{paddingVertical: 0, fontSize: 15}} />
                                     </Item>
                                 </Row>
                                 <Row style={{width: '100%', ...spacing.ptOne, ...spacing.pbZero}}>
                                     <Item style={{width: '100%'}}>
                                         <Icon name='bus' style={{...spacing.pxThree, ...spacing.pyZero, ...font.fsFive, ...color.secondary}} />
-                                        <Input placeholder='Jumlah Kursi (Max 3)' style={{paddingVertical: 0, fontSize: 15}} />
+                                        <Input onChangeText={(val) => onFillData(val, 'totalSeat')} placeholder='Jumlah Kursi (Max 3)' style={{paddingVertical: 0, fontSize: 15}} />
                                     </Item>
                                 </Row>
                                 <Row style={{width: '100%', ...spacing.ptOne, ...spacing.pbSix}}>
                                     <Item style={{width: '100%'}}>
                                         <Icon name='calendar' style={{...spacing.pxThree, ...spacing.pyZero, ...font.fsFive, ...color.secondary}} />
-                                        {/* <DatePicker
+                                        <DatePicker
                                             placeholder='Select Date'
                                             style={{width: 200, marginTop: 10}}
-                                            date={filter.date}
+                                            date={data.date}
                                             minDate={new Date()}
                                             mode="date"
                                             format="DD-MM-YYYY"
                                             confirmBtnText="Confirm"
                                             cancelBtnText="Cancel"
-                                            onDateChange={(date) => onSetDate(date)}
+                                            onDateChange={(date) => onFillData(date, 'date')}
                                             showIcon={false}
 
                                             customStyles={{
@@ -69,7 +89,7 @@ const Home = () => {
                                                     borderWidth: 0
                                                 }
                                             }}
-                                        /> */}
+                                        />
                                     </Item>
                                 </Row>
                             </Body>
@@ -78,7 +98,7 @@ const Home = () => {
                 </Grid>
                 <Grid style={{alignSelf: 'center', ...spacing.pxThree, ...spacing.pyZero}}>
                     <Row style={{...spacing.pxZero, ...spacing.pyFive}}>
-                        <Button style={{width: '100%', borderRadius: 3, ...color.bgPrimary}} block>
+                        <Button onPress={() => onSubmitData()} style={{width: '100%', borderRadius: 3, ...color.bgPrimary}} block>
                             <Text style={{width: '100%', textAlign: 'center', ...font.fsThree, ...font.fStyleLight, ...color.light}}>
                                 Search
                             </Text>
@@ -86,7 +106,12 @@ const Home = () => {
                     </Row>
                     <Row style={{justifyContent: 'center'}}>
                         <Text style={{...color.primary, fontStyle: 'italic'}}>
-                            Error Here
+                            {
+                                error?
+                                    error
+                                :
+                                    null
+                            }
                         </Text>
                     </Row>
                 </Grid>

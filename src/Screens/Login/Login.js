@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {Button, Col, Container, Content, Grid, Input, Item, Label, Row, Text} from 'native-base';
 import { urlAPI } from '../../Supports/Constants/urlAPI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Utilities
 import color from './../../Supports/Styles/Color'
@@ -18,6 +19,22 @@ const Login = ({ navigation }) => {
   const [message, setMessage] = useState('')
   const [isLogin, setIsLogin] = useState(false)
 
+  useEffect(() => {
+    onKeepLogin()
+  }, [])
+
+  const onKeepLogin = () =>{
+    AsyncStorage.getItem('@idUser')
+    .then((res) => {
+      if(res){
+        setIsLogin(true)
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
   const onFillData = (val, dataType) => {
     if(dataType === 'email'){
       setData({...data, email: val}) // setData({password: 'existData', email: newVal})
@@ -31,7 +48,14 @@ const Login = ({ navigation }) => {
     axios.get(urlAPI + '/users', {params: {...data}})
     .then((res) => {
       if(res.data.length === 1){
-        setIsLogin(true)
+        console.log(res.data)
+        AsyncStorage.setItem('@idUser', (res.data[0].id).toString())
+        .then((res) => {
+          setIsLogin(true)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
       }else{
         setMessage('Email / Password Tidak Ditemukan')
       }
@@ -111,3 +135,10 @@ const Login = ({ navigation }) => {
 };
 
 export default Login;
+
+// Login
+// Register
+  // Home
+    // ShuttleList
+  // Transaction
+  // Profile

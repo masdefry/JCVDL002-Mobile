@@ -1,15 +1,16 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Home from '../src/Screens/Home/Home';
+// import Home from '../src/Screens/Home/Home';
 import Transaction from '../src/Screens/Transaction/Transaction';
 import Profile from '../src/Screens/Profile/Profile';
+import HomeRouter from './HomeRouter';
 
 const BottomStack = createBottomTabNavigator()
 
 const MainRouter = () => {
     return(
         <BottomStack.Navigator screenOptions={{ headerShown: false }}>
-            <BottomStack.Screen name='Home' component={Home} />
+            <BottomStack.Screen name='HomeRouter' component={HomeRouter} />
             <BottomStack.Screen name='Transaction' component={Transaction} />
             <BottomStack.Screen name='Profile' component={Profile} />
         </BottomStack.Navigator>

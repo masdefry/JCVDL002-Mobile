@@ -9,11 +9,13 @@ const HomeStack = createStackNavigator()
 const HomeRouter = () => {
     return(
         <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-            <HomeStack.Screen name='ShuttleDetail' component={ShuttleDetail} />
             <HomeStack.Screen name='Home' component={Home} />
             <HomeStack.Screen name='ShuttleList' component={ShuttleList} />
+            <HomeStack.Screen name='ShuttleDetail' component={ShuttleDetail} />
         </HomeStack.Navigator>
     )
 }
 
 export default HomeRouter
+
+// Splash Screen

@@ -263,5 +263,29 @@
     }
   ],
   "transactions": [
+    {
+      "idShuttle": 5,
+      "status": "Paid",
+      "idUser": 2,
+      "name": "DayTrans",
+      "class": "Executive",
+      "from": "Bandung",
+      "to": "Tangerang",
+      "departureDate": "04-10-2021",
+      "detailPassenger": [
+        {
+          "seat": "1A",
+          "name": "Defryan",
+          "umur": "10"
+        },
+        {
+          "seat": "2A",
+          "name": "Zein",
+          "umur": "15"
+        }
+      ],
+      "totalPrice": 105000,
+      "id": 1
+    }
   ]
 }

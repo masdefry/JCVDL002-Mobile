@@ -14,6 +14,7 @@ const ShuttleList = ({ navigation: {navigate}, route }) => {
     
     const [dataSearch, setDataSearch] = useState(null)
     const [dataShuttles, setDataShuttles] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         onGetShuttle()
@@ -25,11 +26,30 @@ const ShuttleList = ({ navigation: {navigate}, route }) => {
         .then((res) =>{
             if(res.data.length > 0){
                 setDataShuttles(res.data)
+                setIsLoading(false)
+            }else{
+                setIsLoading(false)
             }
         })
         .catch((err) => {
             console.log(err)
         })
+    }
+
+    if(isLoading){
+        return(
+            <Container>
+                <Content>
+                    <Grid style={{ height: 300 }}>
+                                <Row>
+                                    <Text>
+                                        Loading...
+                                    </Text>
+                                </Row>
+                            </Grid>
+                </Content>
+            </Container>
+        )
     }
 
     return(
@@ -54,7 +74,7 @@ const ShuttleList = ({ navigation: {navigate}, route }) => {
                     dataShuttles?
                         dataShuttles.map((val, index) => {
                             return(
-                                <Grid key={index} style={{ ...Spacing.pxFive, ...Spacing.pyFive, borderBottomWidth: 1, borderColor: 'gray' }}>
+                                <Grid onPress={() => navigate('ShuttleDetail', {id: val.id, date: dataSearch.date})} key={index} style={{ ...Spacing.pxFive, ...Spacing.pyFive, borderBottomWidth: 1, borderColor: 'gray' }}>
                                     <Row>
                                         <Col>
                                             <Text style={{ ...Font.fsFour }}>

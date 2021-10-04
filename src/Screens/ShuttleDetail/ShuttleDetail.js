@@ -52,14 +52,18 @@ const ShuttleDetail = ({navigation: {navigate}, route}) => {
         axios.get('http://10.0.2.2:3000/transactions', {params: {idShuttle: route.params.id, departureDate: route.params.date}})
         .then((res) => {
             if(res.data){
-                let detailPassenger = res.data[0].detailPassenger
+                let data = res.data
                 let seatBooked = []
 
-                for(let i=0; i<detailPassenger.length; i++){
-                    seatBooked.push(detailPassenger[i].seat)
+                for(let i=0; i < data.length; i++){ // Looping Luar ---> Looping 1
+                    let detailPassenger = data[i].detailPassenger
+
+                    for(let j=0; j < detailPassenger.length; j++){ // Looping Dalam
+                        seatBooked.push(detailPassenger[j].seat)
+                    }
                 }
 
-                setDataSeatBooked([...seatBooked])
+                setDataSeatBooked([...seatBooked]) // 1A, 2A
             }
         })
         .catch((err) => {

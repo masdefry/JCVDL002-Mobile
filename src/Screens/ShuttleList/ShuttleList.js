@@ -52,9 +52,9 @@ const ShuttleList = ({ navigation: {navigate}, route }) => {
             <Content>
                 {
                     dataShuttles?
-                        dataShuttles.map((val) => {
+                        dataShuttles.map((val, index) => {
                             return(
-                                <Grid style={{ ...Spacing.pxFive, ...Spacing.pyFive, borderBottomWidth: 1, borderColor: 'gray' }}>
+                                <Grid key={index} style={{ ...Spacing.pxFive, ...Spacing.pyFive, borderBottomWidth: 1, borderColor: 'gray' }}>
                                     <Row>
                                         <Col>
                                             <Text style={{ ...Font.fsFour }}>

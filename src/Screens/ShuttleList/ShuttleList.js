@@ -2,18 +2,19 @@ import { Body, Col, Container, Content, Grid, Header, Left, Right, Row, Text, Bu
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faDotCircle, faStar } from '@fortawesome/free-solid-svg-icons'
+import axios from 'axios';
 
 // Utilities
 import Spacing from './../../Supports/Styles/Spacing'
 import Font from './../../Supports/Styles/Font'
 import Color from './../../Supports/Styles/Color'
 import { useEffect, useState } from 'react/cjs/react.development';
-import axios from 'axios';
 
 const ShuttleList = ({navigation: {navigate}, route}) => {
 
     const [dataSearch, setDataSearch] = useState(null)
     const [dataShuttleList, setDataShuttleList] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
             
     useEffect(() => {
         setDataSearch({...route.params.data})
@@ -23,13 +24,33 @@ const ShuttleList = ({navigation: {navigate}, route}) => {
     const onGetDataShuttle = () => {
         axios.get('http://10.0.2.2:3000/shuttles', {params: {from: route.params.data.from, to: route.params.data.to}})
         .then((res) => {
-           if(res.data.length !== 0){
+           if(res.data.length !== 0){ // Ketika data ditemukan, set datanya ke dalam state DataShuttleList & kita set isLoading menjadi false
                 setDataShuttleList(res.data)
+                setIsLoading(false)
+           }else{ // Ketika data tidak ditemukan, set isLoading berubah menjadi false
+               setIsLoading(false)
            }
         })
         .catch((err) => {
+            console.log('Error from .catch')
             console.log(err)
         })
+    }
+
+    if(isLoading){
+        return(
+            <Container>
+                <Content>
+                    <Grid>
+                        <Row>
+                            <Text>
+                                Loading...
+                            </Text>
+                        </Row>
+                    </Grid>
+                </Content>
+            </Container>
+        )
     }
 
     return(
@@ -110,7 +131,7 @@ const ShuttleList = ({navigation: {navigate}, route}) => {
                             )
                         })
                     :
-                        <Text style={{ marginTop: 300}}>
+                        <Text style={{ marginTop: 300, textAlign: 'center'}}>
                             Pencarian Tidak Ditemukan
                         </Text>
                 }
@@ -128,3 +149,5 @@ export default ShuttleList
         // ShuttleDetail
     // Transaction
     // Profile
+
+    // Splash Screen

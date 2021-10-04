@@ -236,7 +236,8 @@
       "facility": [
         1,
         3,
-        5
+        5,
+        4
       ]
     }
   ],
@@ -267,5 +268,25 @@
       "image": "./../../Supports/Images/luggage.png"
     }
   ],
-  "transactions": []
+
+  "transactions": [
+    {
+      "id": 1,
+      "idUser": 2,
+      "status": "Paid",
+      "idShuttle": 4,
+      "name": "Jackal Holiday",
+      "class": "Executive",
+      "from": "Bandung",
+      "to": "Tangerang",
+      "departureDate": "04-10-2021",
+      "detailPassenger":[
+        {
+          "seat": "1A",
+          "name": "Defryan",
+          "umur": 10
+        }
+      ]
+    }
+  ]
 }

@@ -1,6 +1,8 @@
 import { Body, Button, Card, Col, Container, Content, Grid, Header, Left, Right, Row, Spinner, Text, Title } from 'native-base'
 import React from 'react'
+import axios from 'axios'
 import {TouchableOpacity} from 'react-native-gesture-handler'
+import {Image} from 'react-native'
 
 
 // Styles
@@ -11,13 +13,82 @@ import Font from './../../Supports/Styles/Font'
 // Icon
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Icon1 from 'react-native-vector-icons/Ionicons'
+import { useEffect, useState } from 'react/cjs/react.development'
 
-const ShuttleDetail = () => {
+const ShuttleDetail = ({route, navigation: {navigate}}) => {
+
+    const [dataShuttle, setDataShuttle] = useState(null)
+    const [dataFacility, setDataFacility] = useState(null)
+    const [dataSeatBooked, setDataSeatBooked] = useState([])
+
+    useEffect(() =>{
+        console.log(route.params)
+        onGetShuttleDetail()
+        onGetFacility()
+        onGetSeatBooked()
+    }, [])
+
+    const onGetShuttleDetail = () => {
+        axios.get('http://10.0.2.2:3000/shuttles', {params: {id: route.params.id}})
+        .then((res) => {
+            setDataShuttle(res.data)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+
+    const onGetFacility = () => {
+        axios.get('http://10.0.2.2:3000/facility')
+        .then((res) => {
+            setDataFacility(res.data)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+
+    const onGetSeatBooked = () => {
+        axios.get('http://10.0.2.2:3000/transactions', {params: {idShuttle: 4, departureDate: '04-10-2021'}})
+        .then((res) => {
+            let seatBooked = []
+            for(let i=0; i < res.data.length; i++){ // Looping di dalam data transaction
+                let detailPassenger = res.data[i].detailPassenger // Setiap kali looping, kita ambil detailPassenger
+
+                for(let j=0; j < detailPassenger.length; j++){ // Lakukan looping di dalam detailPassenger untuk mendapotkan nomor seat yg sudah di booking
+                    seatBooked.push(detailPassenger[i].seat)
+                }
+            }
+
+            console.log(seatBooked)
+            setDataSeatBooked([...seatBooked])
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+
+        if(dataShuttle === null || dataFacility === null){
+            return(
+                <Container>
+                    <Content>
+                        <Grid>
+                            <Row>
+                                <Text>
+                                    Loading
+                                </Text>
+                            </Row>
+                        </Grid>
+                    </Content>
+                </Container>
+            )
+        }
+
         return(
             <Container>
                 <Header style={{alignItems: 'center', ...Color.bgPrimary}}>
                     <Left>
-                        <Icon1 name='arrow-back-circle-outline' style={{...Font.fsEight, ...Color.light}} />
+                        <Icon1 onPress={() => navigate('ShuttleList')} name='arrow-back-circle-outline' style={{...Font.fsEight, ...Color.light}} />
                     </Left>
                     <Body>
                         <Text style={{...Font.fsFive, ...Color.light, ...Spacing.mlFive, fontWeight: 'bold'}}>
@@ -28,21 +99,23 @@ const ShuttleDetail = () => {
                 <Content>
                     <Grid>
                         <Row>
-                            
+                            <Image source={{uri: dataShuttle[0].image1}} style={{ width: '100%', height: 200 }} />
                         </Row>
                     </Grid>
                     <Grid>
                         <Col>
-                            
+                            <Image source={{uri: dataShuttle[0].image2}} style={{ width: '100%', height: 150 }} />
                         </Col>
                         <Col>
-                            
+                            <Image source={{uri: dataShuttle[0].image3}} style={{ width: '100%', height: 150 }} />
                         </Col>
                     </Grid>
                     <Grid style={{...Spacing.pxFive, ...Spacing.mtFive}}>
                         <Col>
                             <Text style={{...Font.fsSix, fontWeight: 'bold'}}>
-                                Pahala Kencana
+                                {
+                                    dataShuttle[0].name
+                                }
                             </Text>
                         </Col>
                         <Col style={{width: '12%'}}>
@@ -54,12 +127,14 @@ const ShuttleDetail = () => {
                     <Grid style={{...Spacing.pxFive}}>
                         <Row>
                             <Text>
-                                Executive
+                                {
+                                    dataShuttle[0].class
+                                }
                             </Text>
                         </Row>
                         <Row>
                             <Text style={{...Font.fsFive, ...Spacing.mtThree, fontWeight: 'bold'}}>
-                                Rp. 250000
+                                Rp. {dataShuttle[0].price}
                             </Text>
                         </Row>
                     </Grid>
@@ -70,7 +145,7 @@ const ShuttleDetail = () => {
                                     Dari : 
                                 </Text>
                                 <Text style={{...Font.fsFive}}>
-                                    Bandung
+                                    {dataShuttle[0].from}
                                 </Text>
                             </Col>
                             <Col>
@@ -83,7 +158,7 @@ const ShuttleDetail = () => {
                                     Tujuan : 
                                 </Text>
                                 <Text style={{...Font.fsFive}}>
-                                    Surabaya
+                                    {dataShuttle[0].to}
                                 </Text>
                             </Col>
                         </Grid>
@@ -96,16 +171,42 @@ const ShuttleDetail = () => {
                         </Row>
                     </Grid>
                     <Grid style={{...Spacing.pxFive, ...Spacing.mtTwo}}>
-                        <Col>
-                            <Text>
-                                AC
-                            </Text>
-                        </Col>
-                        <Col>
-                            <Text>
-                                Toilet
-                            </Text>
-                        </Col>
+                        {
+                            dataFacility.map((val, index) => {
+                                return(
+                                    <>
+                                        {
+                                            dataShuttle[0].facility.includes(val.id)?
+                                                <Col>
+                                                    <Text>
+                                                        {val.facility}
+                                                    </Text>
+                                                </Col>
+                                            :
+                                                null
+                                        }
+                                    </>
+                                )
+                            })
+                        }
+
+                        {/* 
+                            dataShuttle = [{
+                                id: ...,
+                                name: ...,
+                                class: ...,
+                                ...
+                                facility: [1, 2, 3, 4, 5]
+                            }]
+
+                            dataFacility = [
+                                {id: 1, facility: ac},
+                                {id: 2, facility: toilet},
+                                {id: 3, facility: seat},
+                                {id: 4, facility: snack},
+                                {id: 5, facility: storage},
+                            ]
+                        */}
                     </Grid>
                     <Grid style={{...Spacing.pxFive, ...Spacing.mtFive}}>
                         <Row>
@@ -115,44 +216,33 @@ const ShuttleDetail = () => {
                         </Row>
                     </Grid>
                     <Grid style={{...Spacing.pxEight, ...Spacing.pyFive, ...Spacing.mtTwo, ...Spacing.mxFive, flexWrap: 'wrap', borderWidth: 1, borderColor: 'black', borderRadius: 3}}>
-                        <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
-                            <TouchableOpacity>
-                                <Icon1 name='person-outline' style={{fontSize: 25}} />
-                                <Text>
-                                    1A
-                                </Text>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
-                            <TouchableOpacity>
-                                <Icon1 name='person-outline' style={{fontSize: 25}} />
-                                <Text>
-                                    2A
-                                </Text>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
-                            <TouchableOpacity>
-                                <Icon1 name='person-outline' style={{fontSize: 25}} />
-                                <Text>
-                                    3A
-                                </Text>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
-                            <TouchableOpacity>
-                                <Icon1 name='person-outline' style={{fontSize: 25}} />
-                                <Text>
-                                    4A
-                                </Text>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
-                            <Icon1 name='person' style={{fontSize: 25}} />
-                            <Text>
-                                4A
-                            </Text>
-                        </Col>
+                        {
+                            dataShuttle[0].seat.map((val, index) => {
+                                return(
+                                    <>
+                                        {
+                                            dataSeatBooked.includes(val)?
+                                                <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
+                                                    
+                                                        <Icon1 name='person' style={{fontSize: 25}} />
+                                                        <Text>
+                                                            {val}
+                                                        </Text>
+                                                </Col>
+                                            :
+                                                <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
+                                                    <TouchableOpacity>
+                                                        <Icon1 name='person-outline' style={{fontSize: 25}} />
+                                                        <Text>
+                                                            {val}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </Col>
+                                        }   
+                                    </>
+                                )
+                            })
+                        }
                     </Grid>
                 </Content>
             </Container>

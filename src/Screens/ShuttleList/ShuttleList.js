@@ -82,7 +82,7 @@ const ShuttleList = ({navigation: {navigate}, route}) => {
                     dataShuttleList?
                         dataShuttleList.map((val, index) => {
                             return(
-                                <Grid key={index} style={{ ...Spacing.pxFive, ...Spacing.pyFive, borderBottomWidth: 1, borderColor: 'gray' }}>
+                                <Grid key={index} onPress={() => navigate('ShuttleDetail', {id: val.id})} style={{ ...Spacing.pxFive, ...Spacing.pyFive, borderBottomWidth: 1, borderColor: 'gray' }}>
                                     <Row>
                                         <Col>
                                             <Text style={{ ...Font.fsFour }}>

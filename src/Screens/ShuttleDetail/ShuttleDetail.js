@@ -20,6 +20,8 @@ const ShuttleDetail = ({route, navigation: {navigate}}) => {
     const [dataShuttle, setDataShuttle] = useState(null)
     const [dataFacility, setDataFacility] = useState(null)
     const [dataSeatBooked, setDataSeatBooked] = useState([])
+    const [selectedSeat, setSelectedSeat] = useState([])
+    const [error, setError] = useState('')
 
     useEffect(() =>{
         console.log(route.params)
@@ -66,6 +68,39 @@ const ShuttleDetail = ({route, navigation: {navigate}}) => {
         .catch((err) => {
             console.log(err)
         })
+    }
+
+    const onSelectSeat = (seat) => {
+        // Ambil dulu data seat dari selectedSeat
+        console.log(seat)
+        let currentSelectedSeat = [...selectedSeat] // [], [1B], [1B, 1C], [1B, 1C, 1D]
+
+        // Kita cek, apakah nomor seat yg dipilih sudah ada di dalam state selectedSeat?
+        let checkResult = currentSelectedSeat.includes(seat)
+        if(checkResult === false){ // Ketika nomor seat belum ada di dalam state, maka user ingin melakukan select seat
+            currentSelectedSeat.push(seat) // [1B] [1C] [1D] [2A]
+    
+            if(currentSelectedSeat.length <= route.params.totalSeat){
+                setSelectedSeat(currentSelectedSeat)
+            }else{
+                setError(`Total Seat Maksimum ${route.params.totalSeat}`)
+            }
+        }else{ // Ketika nomor seat belum ada di dalam state, maka user ingin melakukan unselect seat
+            let indexSeat = currentSelectedSeat.indexOf(seat)
+            
+            currentSelectedSeat.splice(indexSeat, 1)
+
+            
+            if(currentSelectedSeat.length <= route.params.totalSeat){
+                setSelectedSeat(currentSelectedSeat)
+                setError('')
+            }
+        }
+
+    }
+
+    const onSubmit = () => {
+        console.log(selectedSeat)
     }
 
         if(dataShuttle === null || dataFacility === null){
@@ -177,7 +212,7 @@ const ShuttleDetail = ({route, navigation: {navigate}}) => {
                                     <>
                                         {
                                             dataShuttle[0].facility.includes(val.id)?
-                                                <Col>
+                                                <Col key={val}>
                                                     <Text>
                                                         {val.facility}
                                                     </Text>
@@ -209,11 +244,21 @@ const ShuttleDetail = ({route, navigation: {navigate}}) => {
                         */}
                     </Grid>
                     <Grid style={{...Spacing.pxFive, ...Spacing.mtFive}}>
-                        <Row>
+                        <Col>
                             <Text style={{...Font.fsFive, fontWeight: 'bold'}}>
                                 Seat
                             </Text>
-                        </Row>
+                        </Col>
+                        <Col>
+                            {
+                                error?
+                                    <Text style={{ color: 'red' }}>
+                                        {error}
+                                    </Text>
+                                :
+                                    null
+                            }
+                        </Col>
                     </Grid>
                     <Grid style={{...Spacing.pxEight, ...Spacing.pyFive, ...Spacing.mtTwo, ...Spacing.mxFive, flexWrap: 'wrap', borderWidth: 1, borderColor: 'black', borderRadius: 3}}>
                         {
@@ -222,17 +267,17 @@ const ShuttleDetail = ({route, navigation: {navigate}}) => {
                                     <>
                                         {
                                             dataSeatBooked.includes(val)?
-                                                <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
+                                                <Col key={index} style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
                                                     
                                                         <Icon1 name='person' style={{fontSize: 25}} />
                                                         <Text>
-                                                            {val}
+                                                            Booked
                                                         </Text>
                                                 </Col>
                                             :
-                                                <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
-                                                    <TouchableOpacity>
-                                                        <Icon1 name='person-outline' style={{fontSize: 25}} />
+                                                <Col key={index} style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
+                                                    <TouchableOpacity onPress={() => onSelectSeat(val)}>
+                                                        <Icon1 name={selectedSeat.includes(val)? 'person' : 'person-outline'} style={{fontSize: 25}} />
                                                         <Text>
                                                             {val}
                                                         </Text>
@@ -243,6 +288,15 @@ const ShuttleDetail = ({route, navigation: {navigate}}) => {
                                 )
                             })
                         }
+                    </Grid>
+                    <Grid style={{...Spacing.pxFive, ...Spacing.myFive}}>
+                        <Row>
+                            <Button onPress={onSubmit} style={{ width: '100%', justifyContent: 'center', ...Color.bgPrimary, borderRadius: 25 }}>
+                                <Text>
+                                    Submit
+                                </Text>
+                            </Button>
+                        </Row>
                     </Grid>
                 </Content>
             </Container>

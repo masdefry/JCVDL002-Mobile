@@ -74,7 +74,7 @@ const ShuttleList = ({ navigation: {navigate}, route }) => {
                     dataShuttles?
                         dataShuttles.map((val, index) => {
                             return(
-                                <Grid onPress={() => navigate('ShuttleDetail', {id: val.id, date: dataSearch.date})} key={index} style={{ ...Spacing.pxFive, ...Spacing.pyFive, borderBottomWidth: 1, borderColor: 'gray' }}>
+                                <Grid onPress={() => navigate('ShuttleDetail', {id: val.id, date: dataSearch.date, totalSeat: dataSearch.totalSeat})} key={index} style={{ ...Spacing.pxFive, ...Spacing.pyFive, borderBottomWidth: 1, borderColor: 'gray' }}>
                                     <Row>
                                         <Col>
                                             <Text style={{ ...Font.fsFour }}>

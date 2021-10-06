@@ -329,6 +329,44 @@
       ],
       "totalPrice": 105000,
       "id": 3
+    },
+    {
+      "idShuttle": 4,
+      "status": "Paid",
+      "idUser": 1,
+      "name": "Jackal",
+      "class": "Executive",
+      "from": "Bandung",
+      "to": "Tangerang",
+      "departureDate": "06-10-2021",
+      "detailPassenger": [
+        {
+          "seat": "3B",
+          "name": "Defryan",
+          "umur": "10"
+        }
+      ],
+      "totalPrice": 105000,
+      "id": 4
+    },
+    {
+      "idShuttle": 4,
+      "status": "Paid",
+      "idUser": 1,
+      "name": "Jackal",
+      "class": "Executive",
+      "from": "Bandung",
+      "to": "Tangerang",
+      "departureDate": "06-10-2021",
+      "detailPassenger": [
+        {
+          "seat": "1B",
+          "name": "Defryan",
+          "umur": "10"
+        }
+      ],
+      "totalPrice": 105000,
+      "id": 5
     }
   ]
 }

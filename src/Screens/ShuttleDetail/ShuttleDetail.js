@@ -18,10 +18,11 @@ const ShuttleDetail = ({navigation: {navigate}, route}) => {
     const [dataShuttle, setDataShuttle] = useState(null)
     const [dataFacility, setDataFacility] = useState(null)
     const [dataSeatBooked, setDataSeatBooked] = useState([])
+    const [dataSelectedSeat, setDataSelectedSeat] = useState([])
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        console.log(route.params.id)
-        console.log(route.params.date)
+        console.log(route.params)
         onGetShuttle()
         onGetFacility()
         onGetSeatBooked()
@@ -71,6 +72,34 @@ const ShuttleDetail = ({navigation: {navigate}, route}) => {
         })
     }
 
+    const onSelectSeat = (seat) => {
+        // Step1. Ambil data yg ada di dalam state selectedSeat
+        const currentSelectedSeat = [...dataSelectedSeat] // 1. [] 2. [1A] 3. [1A, 1B]
+
+        // Step2. Apakah nomor seat yg dipilih sudah ada di dalam state selectedSeat
+        let checkResult = currentSelectedSeat.includes(seat)
+
+        // Step3. Jika checkResult === false, berarti user ingin melakukan select seat
+        if(checkResult === false){
+            currentSelectedSeat.push(seat) // [1A] -> [1A, 1B] -> [1A, 1B, 1C]
+
+            if(currentSelectedSeat.length <= route.params.totalSeat){
+                setDataSelectedSeat(currentSelectedSeat) // 1. [1A] 2. [1A, 1B]
+            }else{
+                setError(`Total Seat Maksimum ${route.params.totalSeat}`)
+            }
+        }else{
+            let indexSeat = dataSelectedSeat.indexOf(seat)
+
+            currentSelectedSeat.splice(indexSeat, 1)
+            
+            if(currentSelectedSeat.length <= route.params.totalSeat){
+                setError('')
+            }
+            setDataSelectedSeat(currentSelectedSeat)
+        }
+    }
+
         if(dataShuttle === null || dataFacility === null){
             return(
                 <Container>
@@ -85,6 +114,10 @@ const ShuttleDetail = ({navigation: {navigate}, route}) => {
                     </Content>
                 </Container>
             )
+        }
+
+        const onSubmit = () => {
+            console.log(dataSelectedSeat)
         }
 
         return(
@@ -209,11 +242,21 @@ const ShuttleDetail = ({navigation: {navigate}, route}) => {
                         */}
                     </Grid>
                     <Grid style={{...Spacing.pxFive, ...Spacing.mtFive}}>
-                        <Row>
+                        <Col>
                             <Text style={{...Font.fsFive, fontWeight: 'bold'}}>
                                 Seat
                             </Text>
-                        </Row>
+                        </Col>
+                        <Col>
+                            <Text style={{ color: 'red' }}>
+                                {
+                                    error?
+                                        error
+                                    :
+                                        null
+                                }
+                            </Text>
+                        </Col>
                     </Grid>
                     <Grid style={{...Spacing.pxEight, ...Spacing.pyFive, ...Spacing.mtTwo, ...Spacing.mxFive, flexWrap: 'wrap', borderWidth: 1, borderColor: 'black', borderRadius: 3}}>
                         {
@@ -226,13 +269,13 @@ const ShuttleDetail = ({navigation: {navigate}, route}) => {
                                                     
                                                     <Icon1 name='person' style={{fontSize: 25}} />
                                                     <Text>
-                                                        {val}
+                                                        Booked
                                                     </Text>
                                                 </Col>
                                             :
                                                 <Col style={{width: '25%', alignItems: 'center', ...Spacing.mbTwo}}>
-                                                    <TouchableOpacity>
-                                                        <Icon1 name='person-outline' style={{fontSize: 25}} />
+                                                    <TouchableOpacity onPress={() => onSelectSeat(val)}>
+                                                        <Icon1 name={dataSelectedSeat.includes(val)? 'person' : 'person-outline'} style={{fontSize: 25}} />
                                                         <Text>
                                                             {val}
                                                         </Text>
@@ -243,6 +286,15 @@ const ShuttleDetail = ({navigation: {navigate}, route}) => {
                                 )
                             })
                         }
+                    </Grid>
+                    <Grid style={{...Spacing.pxFive, ...Spacing.myFive}}>
+                        <Row>
+                            <Button onPress={onSubmit} style={{ width: '100%', justifyContent: 'center', ...Color.bgPrimary, borderRadius: 20 }}>
+                                <Text>
+                                    Submit
+                                </Text>
+                            </Button>
+                        </Row>
                     </Grid>
                 </Content>
             </Container>

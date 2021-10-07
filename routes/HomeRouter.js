@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../src/Screens/Home/Home';
 import ShuttleList from './../src/Screens/ShuttleList/ShuttleList'
 import ShuttleDetail from '../src/Screens/ShuttleDetail/ShuttleDetail';
+import BookingDetail from '../src/Screens/BookingDetail/BookingDetail';
 
 const HomeStack = createStackNavigator()
 
@@ -12,6 +13,7 @@ const HomeRouter = () => {
             <HomeStack.Screen name='Home' component={Home} />
             <HomeStack.Screen name='ShuttleList' component={ShuttleList} />
             <HomeStack.Screen name='ShuttleDetail' component={ShuttleDetail} />
+            <HomeStack.Screen name='BookingDetail' component={BookingDetail} />
         </HomeStack.Navigator>
     )
 }

@@ -100,6 +100,10 @@ const ShuttleDetail = ({navigation: {navigate}, route}) => {
         }
     }
 
+    const onSubmit = () => {
+        navigate('BookingDetail', {dataSelectedSeat, idShuttle: route.params.id, name: dataShuttle[0].name, class: dataShuttle[0].class, from: dataShuttle[0].from, to: dataShuttle[0].to, departureDate: route.params.date, totalPrice: route.params.totalSeat * dataShuttle[0].price})
+    }
+
         if(dataShuttle === null || dataFacility === null){
             return(
                 <Container>
@@ -114,10 +118,6 @@ const ShuttleDetail = ({navigation: {navigate}, route}) => {
                     </Content>
                 </Container>
             )
-        }
-
-        const onSubmit = () => {
-            console.log(dataSelectedSeat)
         }
 
         return(
